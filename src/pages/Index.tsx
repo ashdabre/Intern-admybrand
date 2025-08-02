@@ -16,21 +16,21 @@ const Index = () => {
   useEffect(() => {
     const handleAnchorClick = (e: Event) => {
       const target = e.target as HTMLAnchorElement;
-      if (target?.href?.includes('#')) {
+      if (target?.href?.includes("#")) {
         e.preventDefault();
-        const id = target.href.split('#')[1];
+        const id = target.href.split("#")[1];
         const element = document.getElementById(id);
         if (element) {
           element.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start',
+            behavior: "smooth",
+            block: "start",
           });
         }
       }
     };
 
-    document.addEventListener('click', handleAnchorClick);
-    return () => document.removeEventListener('click', handleAnchorClick);
+    document.addEventListener("click", handleAnchorClick);
+    return () => document.removeEventListener("click", handleAnchorClick);
   }, []);
 
   // Supabase auth session & listener
@@ -39,7 +39,17 @@ const Index = () => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         console.log("User already signed in:", session);
-        // You can set user state or redirect here
+        // You can store in state, context, or redirect
+      }
+    });
+
+    // Optional: Get user info (especially useful after redirect)
+    supabase.auth.getUser().then(({ data: { user }, error }) => {
+      if (user) {
+        console.log("User info:", user);
+      }
+      if (error) {
+        console.error("User fetch error:", error);
       }
     });
 
@@ -48,10 +58,10 @@ const Index = () => {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       console.log("Auth state changed:", session);
-      // Store in context/localStorage if needed
+      // Save session if needed
     });
 
-    // Cleanup subscription on unmount
+    // Cleanup on unmount
     return () => subscription.unsubscribe();
   }, []);
 
