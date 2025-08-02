@@ -59,7 +59,11 @@ const Navigation = () => {
           
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center gap-4">
-            <Button variant="ghost" className="text-foreground hover:text-primary">
+            <Button 
+              variant="ghost" 
+              className="text-foreground hover:text-primary"
+              onClick={() => window.location.href = '/sign-in'}
+            >
               Sign In
             </Button>
             <Button variant="hero" size="lg">
@@ -94,6 +98,7 @@ const Navigation = () => {
                 <Button 
                   variant="ghost" 
                   className="w-full justify-start text-foreground hover:text-primary"
+                  onClick={() => window.location.href = '/sign-in'}
                 >
                   Sign In
                 </Button>
