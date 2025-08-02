@@ -3,23 +3,50 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Sparkles, Mail, Lock, Chrome } from "lucide-react";
+import { supabase } from "@/lib/supabaseClient";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Authentication logic will be implemented with Supabase
-    console.log("Sign in with:", email, password);
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      alert("Login failed: " + error.message);
+    } else {
+      console.log("User signed in:", data);
+      // Optional: redirect or set global auth state
+    }
   };
 
-  const handleGoogleSignIn = () => {
-    // Google OAuth logic will be implemented with Supabase
-    console.log("Sign in with Google");
+  const handleGoogleSignIn = async () => {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: "http://localhost:8083", // or your dashboard route
+      },
+    });
+
+    if (error) {
+      alert("Google sign-in failed: " + error.message);
+    } else {
+      console.log("Redirecting to Google...");
+    }
   };
 
   return (
@@ -110,27 +137,23 @@ const SignIn = () => {
                   <input type="checkbox" className="rounded border-white/20" />
                   <span>Remember me</span>
                 </label>
-                <Link 
-                  to="/forgot-password" 
+                <Link
+                  to="/forgot-password"
                   className="text-primary hover:text-primary/80 transition-colors"
                 >
                   Forgot password?
                 </Link>
               </div>
 
-              <Button 
-                type="submit" 
-                variant="hero" 
-                className="w-full h-12"
-              >
+              <Button type="submit" variant="hero" className="w-full h-12">
                 Sign In
               </Button>
             </form>
 
             <div className="text-center text-sm text-muted-foreground">
               Don't have an account?{" "}
-              <Link 
-                to="/sign-up" 
+              <Link
+                to="/sign-up"
                 className="text-primary hover:text-primary/80 transition-colors font-medium"
               >
                 Sign up
