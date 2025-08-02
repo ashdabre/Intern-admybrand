@@ -36,15 +36,16 @@ const Navigation = () => {
               <Sparkles className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="font-display font-bold text-xl text-foreground">
-                ADmyBRAND
-              </h1>
-              <p className="text-xs text-muted-foreground -mt-1">AI Suite</p>
+              <h1 className="font-display text-3xl text-foreground text-white">
+  ADmyBRAND
+</h1>
+
+              <p className="text-xl text-muted-foreground -mt-1">AI Suite</p>
             </div>
           </div>
           
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-8 text-xl">
             {navLinks.map((link, index) => (
               <a
                 key={index}
@@ -59,7 +60,7 @@ const Navigation = () => {
           
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center gap-4">
-            <Button variant="ghost" className="text-foreground hover:text-primary">
+            <Button variant="ghost" className="text-foreground hover:text-primary text-xl">
               Sign In
             </Button>
             <Button variant="hero" size="lg">
