@@ -12,15 +12,15 @@ import { supabase } from "@/lib/supabaseClient";
 const Index = () => {
   useScrollAnimation();
 
-  // Handle anchor link smooth scrolling
+  // Smooth anchor scroll
   useEffect(() => {
     const handleAnchorClick = (e: Event) => {
       const target = e.target as HTMLAnchorElement;
       if (target?.href?.includes("#")) {
-        e.preventDefault();
         const id = target.href.split("#")[1];
         const element = document.getElementById(id);
         if (element) {
+          e.preventDefault();
           element.scrollIntoView({
             behavior: "smooth",
             block: "start",
@@ -33,35 +33,47 @@ const Index = () => {
     return () => document.removeEventListener("click", handleAnchorClick);
   }, []);
 
-  // Supabase auth session & listener
+  // Supabase auth session + user info
   useEffect(() => {
-    // Check if user already has a session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        console.log("User already signed in:", session);
-        // You can store in state, context, or redirect
-      }
-    });
+    const fetchAuthData = async () => {
+      try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
 
-    // Optional: Get user info (especially useful after redirect)
-    supabase.auth.getUser().then(({ data: { user }, error }) => {
-      if (user) {
-        console.log("User info:", user);
-      }
-      if (error) {
-        console.error("User fetch error:", error);
-      }
-    });
+        if (session) {
+          if (window.location.hostname === "localhost") {
+            console.log("Local session:", session);
+          }
+        }
 
-    // Listen for auth state changes
+        const {
+          data: { user },
+          error,
+        } = await supabase.auth.getUser();
+
+        if (error) {
+          console.error("User fetch error:", error.message);
+        } else if (user) {
+          if (window.location.hostname === "localhost") {
+            console.log("User info:", user);
+          }
+        }
+      } catch (err) {
+        console.error("Auth handling error:", err);
+      }
+    };
+
+    fetchAuthData();
+
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log("Auth state changed:", session);
-      // Save session if needed
+      if (window.location.hostname === "localhost") {
+        console.log("Auth state changed:", session);
+      }
     });
 
-    // Cleanup on unmount
     return () => subscription.unsubscribe();
   }, []);
 
